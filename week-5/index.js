@@ -1,7 +1,18 @@
 const express = require ("express");
 const app = express();
+let reqcount = 0 ;
 
-app.get('/multiply',(req,res)=>{
+function middleware(req,res,next){
+    console.log("method is : " + req.method);
+    console.log("url is : " + req.url);
+    const p  = new Date();
+    console.log("date is : " + p.toString());
+    next();
+}
+
+
+
+app.get('/multiply',middleware,(req,res)=>{
     const a = parseInt(req.query.a);
     const b = parseInt(req.query.b) ;
     const c = a*b ;
@@ -10,7 +21,7 @@ app.get('/multiply',(req,res)=>{
     });
 } )
 
-app.get('/add',(req,res)=>{
+app.get('/add',middleware,(req,res)=>{
     const a = parseInt(req.query.a);
     const b = parseInt(req.query.b) ;
     const c = a+b ;
@@ -18,6 +29,7 @@ app.get('/add',(req,res)=>{
         ans : c
     });
 } )
+
 
 app.get('/divide',(req,res)=>{
     const a = parseInt(req.query.a);

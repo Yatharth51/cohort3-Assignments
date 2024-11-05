@@ -3,11 +3,39 @@ const app = express();
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = "IloveRiya" ;
 app.use(express.json());
-
+const cors = require("cors");
+app.use(cors());
 let users = [
 
 ] ;
 
+function auth_middleware(req,res,next)
+{
+    const token = req.headers.token ;
+    if (token){
+        jwt.verify(token,JWT_SECRET,(err,decoded)=>{
+            if (err){
+                res.status(401).send({
+                    message : "unauthorized"
+                })
+            }
+            else{
+                req.user = decoded;
+                next();
+            }
+        })
+    }
+    else{
+        res.status(401).send({
+            message : "unauthorized"
+        })
+    }
+
+}
+
+app.get("/",(req,res)=>{
+    res.sendFile("/Users/yatharth51/Documents/web dev/Assignments solutions/week6/public/index.html");
+})
 
 app.post("/signin",(req,res)=>{
     const username = req.body.username ;
@@ -40,25 +68,12 @@ app.post("/signup",(req,res)=>{
     res.send("user signed up succesfully") ;
 })
 
-app.post("/me",(req,res)=>{
-    const token = req.headers.token ;
-    const decoded_username = jwt.verify(token,JWT_SECRET) ;
-    const currentUser = users.find((u)=>{return decoded_username.username == u.username});
-    if (currentUser){
-        res.json({
-            username : currentUser.username,
-            password : currentUser.password,
-            user_token : token
-        });
-        return;
-    }
-    else{
-        res.json({
-            message : "Invalid Token"
-        }) ;
-    }
+app.get("/me",auth_middleware,(req,res)=>{
+    const user = req.user ;
+    res.json({
+        username : user.username
+    })
 })
-
 app.listen(3000,()=>{
     console.log("http server running on port 3000");
 });

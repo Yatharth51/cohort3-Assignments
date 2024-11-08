@@ -10,8 +10,6 @@ function middleware(req,res,next){
     next();
 }
 
-
-
 app.get('/multiply',middleware,(req,res)=>{
     const a = parseInt(req.query.a);
     const b = parseInt(req.query.b) ;

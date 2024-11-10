@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 
 
-mongoose.connect('mongodb+srv://yatharth51:Q1o61YI2n7ZHaQMW@cluster0.5sxgl.mongodb.net/Todo-test') ;
+mongoose.connect('') ;
 
 app.post('/signup',async (req,res)=>{
     const requiredBody = z.object({
